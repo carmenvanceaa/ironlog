@@ -194,6 +194,16 @@
   .notification{position:fixed;top:calc(var(--safe-top) + 16px);left:50%;transform:translateX(-50%);background:var(--accent);color:#0f0f0f;padding:8px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;z-index:100;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
   .notification.show{opacity:1}
 
+  .backup-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:20px}
+  .backup-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text);margin-bottom:6px}
+  .backup-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+  .backup-actions{display:flex;gap:8px;margin-bottom:10px}
+  .backup-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;border:none;transition:opacity .2s}
+  .backup-btn.export{background:var(--accent);color:#0f0f0f}
+  .backup-btn.import{background:var(--surface2);color:var(--text);border:1px solid var(--border2)}
+  .backup-btn:hover{opacity:.85}
+  .backup-status{font-size:11px;color:var(--muted2);min-height:16px}
+
   select option{background:#1a1a1a;color:#f0f0f0}
   ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
@@ -271,6 +281,21 @@
 
   <!-- HISTORY TAB -->
   <div class="tab-content" id="tab-history" style="display:none">
+
+    <div class="backup-panel">
+      <div class="backup-title">Data Backup</div>
+      <div class="backup-desc">Export saves everything — workouts, templates, custom exercises — to a file. Import merges a backup back in without overwriting existing data.</div>
+      <div class="backup-actions">
+        <button class="backup-btn export" onclick="exportData()">
+          <span>⬇</span> Export Backup
+        </button>
+        <button class="backup-btn import" onclick="importData()">
+          <span>⬆</span> Import Backup
+        </button>
+      </div>
+      <div class="backup-status" id="backup-status"></div>
+    </div>
+
     <div class="section-title">Past Workouts</div>
     <div class="history-list" id="history-list"></div>
   </div>

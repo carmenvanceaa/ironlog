@@ -654,6 +654,75 @@ window.addEventListener('appinstalled', () => {
   dismissInstall();
 });
 
+// ── EXPORT / IMPORT ──────────────────────────────────────────────────────────
+
+function exportData() {
+  const data = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    history: state.history,
+    templates: state.templates,
+    customExercises: state.customExercises
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().slice(0, 10);
+  a.href = url;
+  a.download = `ironlog-backup-${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showNotification('Backup downloaded!');
+}
+
+function importData() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (!data.version || !data.history) {
+          showNotification('Invalid backup file'); return;
+        }
+        const existingWorkouts = state.history.length;
+        const existingTemplates = state.templates.length;
+
+        // Merge: add imported items that don't already exist by id
+        const existingIds = new Set(state.history.map(w => w.id));
+        const newWorkouts = data.history.filter(w => !existingIds.has(w.id));
+        state.history = [...newWorkouts, ...state.history];
+
+        const existingTplIds = new Set(state.templates.map(t => t.id));
+        const newTemplates = (data.templates || []).filter(t => !existingTplIds.has(t.id));
+        state.templates = [...newTemplates, ...state.templates];
+
+        const existingCustomNames = new Set(state.customExercises.map(e => e.name));
+        const newCustom = (data.customExercises || []).filter(e => !existingCustomNames.has(e.name));
+        state.customExercises = [...state.customExercises, ...newCustom];
+
+        saveState();
+        renderTemplates();
+        renderExerciseList();
+        initMuscleFilter();
+
+        const added = (state.history.length - existingWorkouts);
+        const addedTpl = (state.templates.length - existingTemplates);
+        showNotification(`Imported: ${added} workouts, ${addedTpl} templates`);
+        document.getElementById('backup-status').textContent = `Last import: ${new Date().toLocaleDateString()}`;
+      } catch(err) {
+        showNotification('Could not read file — is it a valid IronLog backup?');
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
 // ── INIT ─────────────────────────────────────────────────────────────────────
 
 document.getElementById('voice-text-input').addEventListener('input', updateSubmitBtn);
