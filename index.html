@@ -7,235 +7,291 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="IronLog">
-<meta name="description" content="Your personal gym workout tracker">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>IronLog</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  :root{
-    --bg:#0f0f0f;--surface:#1a1a1a;--surface2:#222;--surface3:#2a2a2a;
-    --border:#333;--border2:#444;
-    --text:#f0f0f0;--muted:#888;--muted2:#555;
-    --accent:#e8ff47;--danger:#ff4f4f;--success:#4fffb0;
-    --radius:10px;--radius-sm:6px;
-    --safe-top: env(safe-area-inset-top);
-    --safe-bottom: env(safe-area-inset-bottom);
-  }
-  html,body{height:100%;overflow:hidden}
-  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0f0f0f;--surface:#1a1a1a;--surface2:#222;--surface3:#2a2a2a;
+  --border:#333;--border2:#444;
+  --text:#f0f0f0;--muted:#888;--muted2:#555;
+  --accent:#e8ff47;--danger:#ff4f4f;--success:#4fffb0;--info:#47b4ff;
+  --radius:10px;--radius-sm:6px;
+  --safe-top:env(safe-area-inset-top);--safe-bottom:env(safe-area-inset-bottom);
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px}
+.app{height:100%;display:flex;flex-direction:column;padding-top:var(--safe-top)}
+.header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid var(--border)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--accent)}
+.header-right{display:flex;align-items:center;gap:10px}
+.date-badge{font-size:11px;color:var(--muted)}
+.streak-badge{background:#1a2a00;border:1px solid #3a5500;border-radius:20px;padding:4px 10px;font-size:12px;font-weight:600;color:var(--accent)}
 
-  .app{
-    height:100%;
-    display:flex;
-    flex-direction:column;
-    padding-top:calc(var(--safe-top) + 0px);
-  }
+/* NAV */
+.nav{flex-shrink:0;display:flex;gap:0;border-bottom:1px solid var(--border);overflow-x:auto}
+.nav::-webkit-scrollbar{display:none}
+.nav-btn{flex:1;padding:10px 4px;border:none;background:transparent;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;min-width:60px}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
 
-  .header{
-    flex-shrink:0;
-    display:flex;align-items:center;justify-content:space-between;
-    padding:16px 16px 12px;
-    border-bottom:1px solid var(--border);
-  }
-  .logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--accent)}
-  .date-badge{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 12px;font-size:12px;color:var(--muted)}
+.tab-content{flex:1;overflow-y:auto;padding:14px 14px calc(80px + var(--safe-bottom));-webkit-overflow-scrolling:touch}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;color:var(--muted);margin-bottom:10px}
 
-  .nav{
-    flex-shrink:0;
-    display:flex;gap:6px;
-    padding:10px 16px;
-    border-bottom:1px solid var(--border);
-  }
-  .nav-btn{flex:1;padding:8px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
-  .nav-btn.active{background:var(--accent);color:#0f0f0f;border-color:var(--accent);font-weight:600}
+/* DASHBOARD */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.stat-label{font-size:11px;color:var(--muted);margin-bottom:4px}
+.stat-value{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:var(--text)}
+.stat-value.accent{color:var(--accent)}
+.stat-sub{font-size:11px;color:var(--muted2);margin-top:2px}
 
-  .tab-content{
-    flex:1;
-    overflow-y:auto;
-    padding:16px 16px calc(80px + var(--safe-bottom));
-    -webkit-overflow-scrolling:touch;
-  }
+.today-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:16px}
+.today-label{font-size:11px;color:var(--muted);margin-bottom:6px}
+.today-workout{font-size:16px;font-weight:600}
+.today-muscles{font-size:12px;color:var(--muted);margin-top:3px}
+.go-btn{margin-top:10px;width:100%;padding:11px;background:var(--accent);color:#0f0f0f;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif}
 
-  .section-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--muted);margin-bottom:12px}
+.week-grid{display:flex;gap:6px;margin-bottom:16px}
+.week-day{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 4px;text-align:center}
+.week-day.done{background:#1a2a00;border-color:#3a5500}
+.week-day.today{border-color:var(--accent)}
+.week-day-name{font-size:10px;color:var(--muted);margin-bottom:4px}
+.week-day-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);margin:0 auto}
+.week-day.done .week-day-dot{background:var(--accent)}
 
-  .workout-meta{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:16px}
-  .workout-name-row{display:flex;gap:8px;align-items:center}
-  .workout-name-input{flex:1;background:transparent;border:none;color:var(--text);font-size:18px;font-weight:600;font-family:'DM Sans',sans-serif;outline:none}
-  .workout-name-input::placeholder{color:var(--muted2)}
-  .save-btn{background:var(--accent);color:#0f0f0f;border:none;border-radius:var(--radius-sm);padding:8px 16px;font-weight:700;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.pr-list{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.pr-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;display:flex;align-items:center;justify-content:space-between}
+.pr-name{font-size:13px;font-weight:500}
+.pr-value{font-size:13px;font-weight:600;color:var(--accent)}
+.pr-date{font-size:11px;color:var(--muted2)}
 
-  .muscle-tabs{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:10px;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
-  .muscle-tabs::-webkit-scrollbar{display:none}
-  .muscle-tab{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap;flex-shrink:0}
-  .muscle-tab.active{background:var(--accent);color:#0f0f0f;border-color:var(--accent);font-weight:600}
+/* BODY WEIGHT */
+.weight-input-row{display:flex;gap:8px;margin-bottom:14px}
+.weight-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-size:22px;font-weight:600;font-family:'DM Sans',sans-serif;outline:none;text-align:center}
+.weight-unit{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--muted);font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.log-weight-btn{background:var(--accent);color:#0f0f0f;border:none;border-radius:var(--radius-sm);padding:10px 20px;font-weight:700;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.weight-history-list{display:flex;flex-direction:column;gap:4px}
+.weight-entry{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;display:flex;align-items:center;justify-content:space-between}
+.weight-entry-val{font-size:15px;font-weight:600}
+.weight-entry-date{font-size:12px;color:var(--muted)}
+.weight-entry-delta{font-size:12px;font-weight:600}
+.weight-entry-delta.down{color:var(--success)}
+.weight-entry-delta.up{color:var(--danger)}
+.del-weight-btn{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:14px;padding:2px 6px}
 
-  .exercise-search{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;color:var(--text);font-size:16px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:8px}
-  .exercise-grid{display:flex;flex-direction:column;gap:4px;max-height:200px;overflow-y:auto;-webkit-overflow-scrolling:touch}
-  .exercise-option{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .15s}
-  .exercise-option:active{background:var(--surface2);border-color:var(--accent)}
-  .ex-name{font-size:13px;font-weight:500}
-  .ex-muscle{font-size:11px;color:var(--muted);margin-top:1px}
+/* CHARTS */
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:14px}
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.chart-title{font-size:13px;font-weight:600}
+.chart-select{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 8px;color:var(--text);font-size:12px;font-family:'DM Sans',sans-serif;outline:none}
+canvas{width:100%!important;display:block}
 
-  .custom-ex-row{display:flex;gap:6px;margin-top:8px}
-  .custom-ex-row input,.custom-ex-row select{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;flex:1;min-width:0}
-  .add-custom-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:8px 12px;color:var(--accent);font-size:12px;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;flex-shrink:0}
+/* SCHEDULE */
+.schedule-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.schedule-day{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:12px}
+.schedule-day.today-highlight{border-color:var(--accent);background:#111f00}
+.schedule-day-name{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;width:36px;flex-shrink:0;color:var(--muted)}
+.schedule-day.today-highlight .schedule-day-name{color:var(--accent)}
+.schedule-day-content{flex:1;min-width:0}
+.schedule-day-workout{font-size:13px;font-weight:600}
+.schedule-day-muscles{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.schedule-day-rest{font-size:13px;color:var(--muted2)}
+.schedule-assign-btn{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 10px;color:var(--muted);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0}
+.schedule-assign-btn.assigned{color:var(--accent);border-color:#3a5500}
 
-  .exercises-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
-  .exercise-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-  .exercise-card-header{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
-  .exercise-card-name{font-weight:600;font-size:14px}
-  .exercise-card-muscle{font-size:11px;color:var(--muted);margin-top:2px}
-  .del-ex-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:4px 8px;transition:color .15s}
+/* WORKOUT LOG */
+.workout-meta{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:14px}
+.workout-name-row{display:flex;gap:8px;align-items:center}
+.workout-name-input{flex:1;background:transparent;border:none;color:var(--text);font-size:18px;font-weight:600;font-family:'DM Sans',sans-serif;outline:none}
+.workout-name-input::placeholder{color:var(--muted2)}
+.save-btn{background:var(--accent);color:#0f0f0f;border:none;border-radius:var(--radius-sm);padding:8px 16px;font-weight:700;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.muscle-tabs{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:10px;padding-bottom:2px}
+.muscle-tabs::-webkit-scrollbar{display:none}
+.muscle-tab{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0}
+.muscle-tab.active{background:var(--accent);color:#0f0f0f;border-color:var(--accent);font-weight:600}
+.exercise-search{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;color:var(--text);font-size:16px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:8px}
+.exercise-grid{display:flex;flex-direction:column;gap:4px;max-height:180px;overflow-y:auto}
+.exercise-option{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.exercise-option:active{background:var(--surface2);border-color:var(--accent)}
+.ex-name{font-size:13px;font-weight:500}
+.ex-muscle{font-size:11px;color:var(--muted);margin-top:1px}
+.custom-ex-row{display:flex;gap:6px;margin-top:8px}
+.custom-ex-row input,.custom-ex-row select{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;flex:1;min-width:0}
+.add-custom-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:8px 12px;color:var(--accent);font-size:12px;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;flex-shrink:0}
+.exercises-list{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.exercise-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.exercise-card-header{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.exercise-card-name{font-weight:600;font-size:14px}
+.exercise-card-muscle{font-size:11px;color:var(--muted);margin-top:2px}
+.del-ex-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:4px 8px}
+.sets-table{width:100%;border-collapse:collapse}
+.sets-table th{font-size:11px;color:var(--muted);padding:6px 10px;text-align:center;font-weight:500}
+.sets-table th:first-child{text-align:left}
+.sets-table td{padding:5px 6px;text-align:center;border-top:1px solid var(--border)}
+.set-num{color:var(--muted);font-size:12px;padding-left:14px;text-align:left}
+.set-input-wrap{display:inline-flex;flex-direction:column;align-items:center}
+.set-input{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:6px;color:var(--text);font-size:15px;font-family:'DM Sans',sans-serif;text-align:center;width:60px;outline:none}
+.set-input:focus{border-color:var(--accent)}
+.set-input.changed{border-color:var(--accent);background:#1e2a00}
+.prev-val{font-size:10px;color:var(--muted2);margin-top:2px}
+.prev-val.has-val{color:var(--muted)}
+.del-set-btn{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:16px;padding:4px 8px}
+.add-set-row{padding:8px 14px;display:flex;justify-content:flex-end}
+.add-set-btn{background:none;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--muted);font-size:12px;padding:6px 14px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.templates-section{margin-bottom:16px}
+.template-cards{display:flex;flex-direction:column;gap:8px}
+.template-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.template-info{flex:1;min-width:0}
+.template-name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.template-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.template-actions{display:flex;gap:6px;flex-shrink:0}
+.tpl-btn{border-radius:var(--radius-sm);padding:7px 14px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--muted);white-space:nowrap}
+.tpl-btn.start{background:var(--accent);color:#0f0f0f;border-color:var(--accent);font-weight:700}
+.save-as-tpl-btn{width:100%;margin-top:8px;padding:10px;border-radius:var(--radius-sm);border:1px dashed var(--border2);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif}
 
-  .sets-table{width:100%;border-collapse:collapse}
-  .sets-table th{font-size:11px;color:var(--muted);padding:6px 10px;text-align:center;font-weight:500}
-  .sets-table th:first-child{text-align:left}
-  .sets-table td{padding:5px 6px;text-align:center;border-top:1px solid var(--border)}
-  .set-num{color:var(--muted);font-size:12px;padding-left:14px;text-align:left}
-  .set-input-wrap{display:inline-flex;flex-direction:column;align-items:center}
-  .set-input{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:6px;color:var(--text);font-size:15px;font-family:'DM Sans',sans-serif;text-align:center;width:60px;outline:none;-webkit-appearance:none}
-  .set-input:focus{border-color:var(--accent)}
-  .set-input.changed{border-color:var(--accent);background:#1e2a00}
-  .prev-val{font-size:10px;color:var(--muted2);margin-top:2px}
-  .prev-val.has-val{color:var(--muted)}
-  .del-set-btn{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:16px;padding:4px 8px;transition:color .15s}
-  .add-set-row{padding:8px 14px;display:flex;justify-content:flex-end}
-  .add-set-btn{background:none;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--muted);font-size:12px;padding:6px 14px;cursor:pointer;font-family:'DM Sans',sans-serif}
+/* VOICE */
+.voice-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:14px}
+.voice-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.voice-title{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px}
+.voice-badge{font-size:10px;background:#1a1a00;color:var(--accent);border:1px solid #444400;border-radius:4px;padding:2px 8px;font-weight:600}
+.mic-btn{width:60px;height:60px;border-radius:50%;border:2px solid var(--border2);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 10px}
+.mic-btn.recording{border-color:var(--danger);background:#2a0000;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,79,79,.4)}50%{box-shadow:0 0 0 10px rgba(255,79,79,0)}}
+.mic-hint{text-align:center;font-size:12px;color:var(--muted);margin-bottom:8px}
+.transcript-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;font-size:13px;min-height:36px;line-height:1.5;margin-bottom:8px}
+.transcript-box.empty{color:var(--muted2);font-style:italic}
+.or-divider{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:11px;color:var(--muted2)}
+.or-divider::before,.or-divider::after{content:'';flex:1;border-top:1px solid var(--border)}
+.voice-text-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;color:var(--text);font-size:16px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:8px;resize:none}
+.voice-text-input::placeholder{color:var(--muted2)}
+.voice-submit-btn{width:100%;padding:11px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#0f0f0f;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif}
+.voice-submit-btn:disabled{opacity:.4;cursor:not-allowed}
 
-  .templates-section{margin-bottom:20px}
-  .template-cards{display:flex;flex-direction:column;gap:8px}
-  .template-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .template-info{flex:1;min-width:0}
-  .template-name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .template-meta{font-size:11px;color:var(--muted);margin-top:2px}
-  .template-actions{display:flex;gap:6px;flex-shrink:0}
-  .tpl-btn{border-radius:var(--radius-sm);padding:7px 14px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--muted);white-space:nowrap}
-  .tpl-btn.start{background:var(--accent);color:#0f0f0f;border-color:var(--accent);font-weight:700}
-  .save-as-tpl-btn{width:100%;margin-top:8px;padding:10px;border-radius:var(--radius-sm);border:1px dashed var(--border2);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif}
+/* REVIEW */
+.review-panel{background:var(--surface);border:2px solid var(--accent);border-radius:var(--radius);padding:14px;margin-bottom:14px}
+.review-title{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:var(--accent);margin-bottom:4px}
+.review-understood{font-size:13px;margin-bottom:10px;line-height:1.5}
+.review-changes{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.review-change{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px}
+.review-change-header{font-size:13px;font-weight:600;margin-bottom:2px}
+.review-change-detail{font-size:12px;color:var(--muted)}
+.change-arrow{color:var(--accent);margin:0 6px}
+.review-actions{display:flex;gap:8px}
+.review-confirm-btn{flex:1;padding:11px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#0f0f0f;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif}
+.review-discard-btn{flex:1;padding:11px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.no-match{color:var(--danger);font-size:12px;background:#1a0000;border:1px solid #3a0000;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px;line-height:1.6}
 
-  /* Voice */
-  .voice-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px}
-  .voice-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-  .voice-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px}
-  .voice-badge{font-size:10px;background:#1a1a00;color:var(--accent);border:1px solid #444400;border-radius:4px;padding:2px 8px;font-weight:600}
-  .mic-btn{width:68px;height:68px;border-radius:50%;border:2px solid var(--border2);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px}
-  .mic-btn.recording{border-color:var(--danger);background:#2a0000;animation:pulse 1s infinite}
-  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,79,79,0.4)}50%{box-shadow:0 0 0 10px rgba(255,79,79,0)}}
-  .mic-hint{text-align:center;font-size:12px;color:var(--muted);margin-bottom:10px}
-  .transcript-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;min-height:38px;line-height:1.5;margin-bottom:10px}
-  .transcript-box.empty{color:var(--muted2);font-style:italic}
-  .or-divider{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:11px;color:var(--muted2)}
-  .or-divider::before,.or-divider::after{content:'';flex:1;border-top:1px solid var(--border)}
-  .voice-text-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-size:16px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:8px;resize:none}
-  .voice-text-input::placeholder{color:var(--muted2)}
-  .voice-submit-btn{width:100%;padding:12px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#0f0f0f;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif}
-  .voice-submit-btn:disabled{opacity:.4;cursor:not-allowed}
-  .voice-examples{margin-top:10px;font-size:11px;color:var(--muted2);line-height:1.8}
-  .voice-examples span{color:var(--muted);font-style:italic}
+/* HISTORY */
+.history-list{display:flex;flex-direction:column;gap:10px}
+.history-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer}
+.history-card.expanded{border-color:var(--accent)}
+.history-card-header{display:flex;justify-content:space-between;align-items:flex-start}
+.history-workout-name{font-weight:600;font-size:15px}
+.history-date{font-size:12px;color:var(--muted)}
+.history-muscles{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.muscle-tag{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:11px;color:var(--muted)}
+.history-details{margin-top:12px;border-top:1px solid var(--border);padding-top:12px;display:none}
+.history-card.expanded .history-details{display:block}
+.history-ex-item{margin-bottom:10px}
+.history-ex-name{font-size:13px;font-weight:500;margin-bottom:4px}
+.history-sets-row{display:flex;gap:6px;flex-wrap:wrap}
+.history-set-badge{background:var(--surface3);border-radius:4px;padding:3px 8px;font-size:11px;color:var(--muted)}
+.history-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.edit-workout-btn,.del-workout-btn{background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 14px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--muted)}
+.del-workout-btn{color:var(--danger)}
 
-  /* Review */
-  .review-panel{background:var(--surface);border:2px solid var(--accent);border-radius:var(--radius);padding:16px;margin-bottom:16px}
-  .review-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--accent);margin-bottom:4px}
-  .review-understood{font-size:13px;color:var(--text);margin-bottom:12px;line-height:1.5}
-  .review-changes{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
-  .review-change{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px}
-  .review-change-header{font-size:13px;font-weight:600;margin-bottom:3px}
-  .review-change-detail{font-size:12px;color:var(--muted);line-height:1.6}
-  .change-arrow{color:var(--accent);margin:0 6px}
-  .review-actions{display:flex;gap:8px}
-  .review-confirm-btn{flex:1;padding:12px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#0f0f0f;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif}
-  .review-discard-btn{flex:1;padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif}
-  .no-match{color:var(--danger);font-size:12px;background:#1a0000;border:1px solid #3a0000;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px;line-height:1.6}
+/* BACKUP */
+.backup-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:16px}
+.backup-title{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;margin-bottom:5px}
+.backup-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+.backup-actions{display:flex;gap:8px}
+.backup-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:11px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;border:none}
+.backup-btn.export{background:var(--accent);color:#0f0f0f}
+.backup-btn.import{background:var(--surface2);color:var(--text);border:1px solid var(--border2)}
 
-  /* History */
-  .history-list{display:flex;flex-direction:column;gap:10px}
-  .history-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer}
-  .history-card.expanded{border-color:var(--accent)}
-  .history-card-header{display:flex;justify-content:space-between;align-items:flex-start}
-  .history-workout-name{font-weight:600;font-size:15px}
-  .history-date{font-size:12px;color:var(--muted)}
-  .history-muscles{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
-  .muscle-tag{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:11px;color:var(--muted)}
-  .history-details{margin-top:12px;border-top:1px solid var(--border);padding-top:12px;display:none}
-  .history-card.expanded .history-details{display:block}
-  .history-ex-item{margin-bottom:10px}
-  .history-ex-name{font-size:13px;font-weight:500;margin-bottom:4px}
-  .history-sets-row{display:flex;gap:6px;flex-wrap:wrap}
-  .history-set-badge{background:var(--surface3);border-radius:4px;padding:3px 8px;font-size:11px;color:var(--muted)}
-  .history-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-  .edit-workout-btn,.del-workout-btn{background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 14px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--muted)}
-  .del-workout-btn{color:var(--danger)}
+/* PR FLASH */
+.pr-flash{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a2a00;border:2px solid var(--accent);border-radius:var(--radius);padding:24px 32px;text-align:center;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none}
+.pr-flash.show{opacity:1}
+.pr-flash-icon{font-size:40px;margin-bottom:8px}
+.pr-flash-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--accent)}
+.pr-flash-sub{font-size:13px;color:var(--text);margin-top:4px}
 
-  /* Timer bar */
-  .timer-bar{
-    flex-shrink:0;
-    background:var(--surface);
-    border-top:1px solid var(--border);
-    padding:10px 16px;
-    padding-bottom:calc(10px + var(--safe-bottom));
-    display:flex;align-items:center;justify-content:space-between;
-  }
-  .timer-display{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;color:var(--accent)}
-  .timer-display.running{color:var(--success)}
-  .timer-display.done{color:var(--danger);animation:blink .5s infinite}
-  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-  .timer-controls{display:flex;gap:8px}
-  .timer-btn{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 16px;color:var(--text);font-size:13px;cursor:pointer;font-weight:500;font-family:'DM Sans',sans-serif}
-  .timer-btn.start{background:var(--accent);color:#0f0f0f;border-color:var(--accent);font-weight:700}
-  .timer-label{font-size:11px;color:var(--muted);margin-bottom:2px}
+/* TIMER */
+.timer-bar{flex-shrink:0;background:var(--surface);border-top:1px solid var(--border);padding:10px 16px;padding-bottom:calc(10px + var(--safe-bottom));display:flex;align-items:center;justify-content:space-between}
+.timer-display{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:2px;color:var(--accent)}
+.timer-display.running{color:var(--success)}
+.timer-display.done{color:var(--danger);animation:blink .5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.timer-controls{display:flex;gap:8px}
+.timer-btn{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 16px;color:var(--text);font-size:13px;cursor:pointer;font-weight:500;font-family:'DM Sans',sans-serif}
+.timer-btn.start{background:var(--accent);color:#0f0f0f;border-color:var(--accent);font-weight:700}
+.timer-label{font-size:11px;color:var(--muted);margin-bottom:2px}
 
-  .divider{border:none;border-top:1px solid var(--border);margin:16px 0}
-  .empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
-
-  .notification{position:fixed;top:calc(var(--safe-top) + 16px);left:50%;transform:translateX(-50%);background:var(--accent);color:#0f0f0f;padding:8px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;z-index:100;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
-  .notification.show{opacity:1}
-
-  .backup-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:20px}
-  .backup-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text);margin-bottom:6px}
-  .backup-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px}
-  .backup-actions{display:flex;gap:8px;margin-bottom:10px}
-  .backup-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;border:none;transition:opacity .2s}
-  .backup-btn.export{background:var(--accent);color:#0f0f0f}
-  .backup-btn.import{background:var(--surface2);color:var(--text);border:1px solid var(--border2)}
-  .backup-btn:hover{opacity:.85}
-  .backup-status{font-size:11px;color:var(--muted2);min-height:16px}
-
-  select option{background:#1a1a1a;color:#f0f0f0}
-  ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-
-  /* Install banner */
-  .install-banner{background:#1a2a00;border:1px solid #3a5500;border-radius:var(--radius);padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .install-banner-text{font-size:12px;color:var(--accent);line-height:1.5}
-  .install-banner-btn{background:var(--accent);color:#0f0f0f;border:none;border-radius:var(--radius-sm);padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0}
-  .install-banner-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:0 4px;flex-shrink:0}
+.divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.empty-state{text-align:center;padding:36px 20px;color:var(--muted)}
+.notification{position:fixed;top:calc(var(--safe-top) + 14px);left:50%;transform:translateX(-50%);background:var(--accent);color:#0f0f0f;padding:8px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;z-index:100;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.notification.show{opacity:1}
+.install-banner{background:#1a2a00;border:1px solid #3a5500;border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.install-banner-text{font-size:12px;color:var(--accent);line-height:1.5}
+.install-btn{background:var(--accent);color:#0f0f0f;border:none;border-radius:var(--radius-sm);padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0}
+.install-banner-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;flex-shrink:0}
+select option{background:#1a1a1a;color:#f0f0f0}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
     <div class="logo">IRONLOG</div>
-    <div class="date-badge" id="today-date"></div>
+    <div class="header-right">
+      <div class="streak-badge" id="streak-badge">🔥 0</div>
+      <div class="date-badge" id="today-date"></div>
+    </div>
   </div>
 
   <div class="nav">
-    <button class="nav-btn active" onclick="showTab('log')">Log Workout</button>
+    <button class="nav-btn active" onclick="showTab('dashboard')">Dashboard</button>
+    <button class="nav-btn" onclick="showTab('log')">Log</button>
+    <button class="nav-btn" onclick="showTab('progress')">Progress</button>
+    <button class="nav-btn" onclick="showTab('schedule')">Schedule</button>
     <button class="nav-btn" onclick="showTab('history')">History</button>
   </div>
 
-  <!-- LOG TAB -->
-  <div class="tab-content" id="tab-log">
+  <!-- DASHBOARD -->
+  <div class="tab-content" id="tab-dashboard">
     <div id="install-banner" style="display:none" class="install-banner">
-      <div class="install-banner-text">📲 Add IronLog to your home screen for the full app experience</div>
-      <button class="install-banner-btn" id="install-btn" onclick="installApp()">Install</button>
+      <div class="install-banner-text">📲 Add IronLog to your home screen</div>
+      <button class="install-btn" onclick="installApp()">Install</button>
       <button class="install-banner-close" onclick="dismissInstall()">✕</button>
     </div>
 
-    <div class="templates-section" id="templates-section"></div>
+    <div class="today-card" id="today-card">
+      <div class="today-label">TODAY'S WORKOUT</div>
+      <div class="today-workout" id="today-workout-name">No workout scheduled</div>
+      <div class="today-muscles" id="today-workout-muscles"></div>
+      <button class="go-btn" id="today-go-btn" onclick="loadTodayWorkout()" style="display:none">Load &amp; Start →</button>
+    </div>
 
+    <div class="section-title">This Week</div>
+    <div class="week-grid" id="week-grid"></div>
+
+    <div class="section-title">Stats</div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">TOTAL WORKOUTS</div><div class="stat-value accent" id="stat-total">0</div><div class="stat-sub">all time</div></div>
+      <div class="stat-card"><div class="stat-label">THIS MONTH</div><div class="stat-value accent" id="stat-month">0</div><div class="stat-sub">workouts</div></div>
+      <div class="stat-card"><div class="stat-label">TOTAL VOLUME</div><div class="stat-value accent" id="stat-volume">0</div><div class="stat-sub">tonnes lifted</div></div>
+      <div class="stat-card"><div class="stat-label">BODY WEIGHT</div><div class="stat-value accent" id="stat-weight">—</div><div class="stat-sub" id="stat-weight-delta"></div></div>
+    </div>
+
+    <div class="section-title">Personal Records</div>
+    <div class="pr-list" id="pr-list"><div class="empty-state" style="padding:20px">Complete workouts to set PRs</div></div>
+  </div>
+
+  <!-- LOG TAB -->
+  <div class="tab-content" id="tab-log" style="display:none">
+    <div class="templates-section" id="templates-section"></div>
     <div class="section-title">Voice Log</div>
     <div class="voice-section">
       <div class="voice-header">
@@ -246,22 +302,18 @@
       <div class="mic-hint" id="mic-hint">Tap to speak your update</div>
       <div class="transcript-box empty" id="transcript-box">Tap mic and speak...</div>
       <div class="or-divider">or type it</div>
-      <textarea class="voice-text-input" id="voice-text-input" rows="2" placeholder='e.g. "load push day" or "add 2.5kg to last set of bench press"'></textarea>
+      <textarea class="voice-text-input" id="voice-text-input" rows="2" placeholder='"load push day" or "add 2kg last set bench press"'></textarea>
       <button class="voice-submit-btn" id="voice-submit-btn" onclick="submitVoiceLog()" disabled>Interpret &amp; Review</button>
-      <div class="voice-examples">Try: <span>"load push day"</span> · <span>"2kg more last set face pulls"</span> · <span>"bench press 80kg 8 reps all sets"</span> · <span>"add lateral raise"</span></div>
     </div>
-
     <div id="review-container"></div>
-
     <div class="workout-meta">
       <div class="workout-name-row">
         <input class="workout-name-input" id="workout-name" placeholder="Workout name (e.g. Push Day)">
         <button class="save-btn" onclick="saveWorkout()">Save</button>
       </div>
     </div>
-
     <div class="section-title">Add Exercise</div>
-    <div style="margin-bottom:16px">
+    <div style="margin-bottom:14px">
       <div class="muscle-tabs" id="muscle-tabs"></div>
       <input class="exercise-search" id="exercise-search" placeholder="Search exercises..." oninput="renderExerciseList()">
       <div class="exercise-grid" id="exercise-list"></div>
@@ -271,50 +323,95 @@
         <button class="add-custom-btn" onclick="addCustomExercise()">+ Add</button>
       </div>
     </div>
-
     <div class="section-title">This Session</div>
     <div class="exercises-list" id="exercises-list">
-      <div class="empty-state"><div style="font-size:32px;margin-bottom:10px">🏋</div><div>Load a template or add exercises above</div></div>
+      <div class="empty-state"><div style="font-size:32px;margin-bottom:8px">🏋</div><div>Load a template or add exercises</div></div>
     </div>
     <button class="save-as-tpl-btn" onclick="saveAsTemplate()">+ Save current session as template</button>
   </div>
 
-  <!-- HISTORY TAB -->
-  <div class="tab-content" id="tab-history" style="display:none">
-
-    <div class="backup-panel">
-      <div class="backup-title">Data Backup</div>
-      <div class="backup-desc">Export saves everything — workouts, templates, custom exercises — to a file. Import merges a backup back in without overwriting existing data.</div>
-      <div class="backup-actions">
-        <button class="backup-btn export" onclick="exportData()">
-          <span>⬇</span> Export Backup
-        </button>
-        <button class="backup-btn import" onclick="importData()">
-          <span>⬆</span> Import Backup
-        </button>
-      </div>
-      <div class="backup-status" id="backup-status"></div>
+  <!-- PROGRESS TAB -->
+  <div class="tab-content" id="tab-progress" style="display:none">
+    <div class="section-title">Body Weight</div>
+    <div class="weight-input-row">
+      <input class="weight-input" id="weight-input" type="number" inputmode="decimal" placeholder="75.0" step="0.1">
+      <button class="weight-unit" id="weight-unit-btn" onclick="toggleWeightUnit()">kg</button>
+      <button class="log-weight-btn" onclick="logWeight()">Log</button>
     </div>
 
+    <div class="chart-wrap">
+      <div class="chart-header"><div class="chart-title">Weight over time</div></div>
+      <canvas id="weight-chart" height="160"></canvas>
+    </div>
+
+    <div class="weight-history-list" id="weight-history-list"></div>
+
+    <hr class="divider">
+    <div class="section-title">Strength Progress</div>
+    <div class="chart-wrap">
+      <div class="chart-header">
+        <div class="chart-title">Max weight per session</div>
+        <select class="chart-select" id="strength-exercise-select" onchange="renderStrengthChart()">
+          <option value="">Select exercise</option>
+        </select>
+      </div>
+      <canvas id="strength-chart" height="160"></canvas>
+    </div>
+
+    <div class="chart-wrap">
+      <div class="chart-header">
+        <div class="chart-title">Total volume per session</div>
+        <select class="chart-select" id="volume-exercise-select" onchange="renderVolumeChart()">
+          <option value="">Select exercise</option>
+        </select>
+      </div>
+      <canvas id="volume-chart" height="160"></canvas>
+    </div>
+  </div>
+
+  <!-- SCHEDULE TAB -->
+  <div class="tab-content" id="tab-schedule" style="display:none">
+    <div class="section-title">Weekly Split</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Assign templates to days. The Dashboard will show today's session automatically.</div>
+    <div class="schedule-grid" id="schedule-grid"></div>
+  </div>
+
+  <!-- HISTORY TAB -->
+  <div class="tab-content" id="tab-history" style="display:none">
+    <div class="backup-panel">
+      <div class="backup-title">Data Backup</div>
+      <div class="backup-desc">Export everything — workouts, templates, body weight, schedule — to a JSON file. Import merges without overwriting.</div>
+      <div class="backup-actions">
+        <button class="backup-btn export" onclick="exportData()">⬇ Export</button>
+        <button class="backup-btn import" onclick="importData()">⬆ Import</button>
+      </div>
+    </div>
     <div class="section-title">Past Workouts</div>
     <div class="history-list" id="history-list"></div>
   </div>
+</div>
 
-  <!-- Timer bar always visible -->
-  <div class="timer-bar">
-    <div>
-      <div class="timer-label">Rest Timer</div>
-      <div class="timer-display" id="timer-display">1:00</div>
-    </div>
-    <div class="timer-controls">
-      <button class="timer-btn" onclick="resetTimer()">Reset</button>
-      <button class="timer-btn start" id="timer-start-btn" onclick="toggleTimer()">Start</button>
-    </div>
+<!-- Timer bar -->
+<div class="timer-bar">
+  <div>
+    <div class="timer-label">Rest Timer</div>
+    <div class="timer-display" id="timer-display">1:00</div>
+  </div>
+  <div class="timer-controls">
+    <button class="timer-btn" onclick="resetTimer()">Reset</button>
+    <button class="timer-btn start" id="timer-start-btn" onclick="toggleTimer()">Start</button>
   </div>
 </div>
 
-<div class="notification" id="notification"></div>
+<!-- PR Flash -->
+<div class="pr-flash" id="pr-flash">
+  <div class="pr-flash-icon">🏆</div>
+  <div class="pr-flash-title">New PR!</div>
+  <div class="pr-flash-sub" id="pr-flash-sub"></div>
+</div>
 
+<div class="notification" id="notification"></div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
